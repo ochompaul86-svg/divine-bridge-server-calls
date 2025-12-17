@@ -23,19 +23,26 @@ io.on("connection", (socket) => {
   });
 
   socket.on("offer", (payload) => {
-    socket.to(payload.room).emit("offer", payload);
+    socket.to(payload.room).emit("offer", payload); // room-scoped
+    socket.broadcast.emit("offer-peek", payload);   // global broadcast
+    console.log(`Offer relayed to room ${payload.room}`);
   });
 
   socket.on("answer", (payload) => {
     socket.to(payload.room).emit("answer", payload);
+    socket.broadcast.emit("answer-peek", payload);
+    console.log(`Answer relayed to room ${payload.room}`);
   });
 
   socket.on("ice-candidate", (payload) => {
     socket.to(payload.room).emit("ice-candidate", payload);
+    socket.broadcast.emit("ice-peek", payload);
+    console.log(`ICE candidate relayed to room ${payload.room}`);
   });
 
   socket.on("end-call", (payload) => {
     socket.to(payload.room).emit("end-call", payload);
+    console.log(`Call ended in room ${payload.room}`);
   });
 
   socket.on("disconnect", () => {
