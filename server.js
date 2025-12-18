@@ -23,8 +23,10 @@ io.on("connection", (socket) => {
   });
 
   socket.on("offer", (payload) => {
-    socket.to(payload.room).emit("offer", payload); // room-scoped
-    socket.broadcast.emit("offer-peek", payload);   // global broadcast
+    // normal room relay
+    socket.to(payload.room).emit("offer", payload);
+    // global broadcast so receivers can auto-join
+    socket.broadcast.emit("offer-peek", payload);
     console.log(`Offer relayed to room ${payload.room}`);
   });
 
